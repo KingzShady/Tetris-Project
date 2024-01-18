@@ -14,7 +14,7 @@ g_screen = pygame.display.set_mode(WIN_RES)
 clock = pygame.time.Clock()
 
 # Main game loop
-while true :
+while True :
      # Clear the screen by filling it with a black color.
     g_screen.fill(pygame.Color('black'))
 
@@ -23,7 +23,10 @@ while true :
         # If the event is a QUIT event (user closes the window):
         if event.type == pygame.QUIT:
             # Quit Pygame and exit the program.
-            pygame.quit()
-            quit()
-     
+            exit()
+    
+    # updates the display to reflect the changes made during the current frame.
+    pygame.display.flip()
 
+    # Control the frame rate using the Pygame clock
+    clock.tick() # Replace FPS with your desired frames per second value
