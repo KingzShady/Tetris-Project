@@ -10,6 +10,9 @@ TILE = 45
 # Calculate the window resolution based on the grid dimensions and tile size.
 WIN_RES = WIDTH * TILE, HEIGHT * TILE
 
+# Set the frames per second for the game loop.
+FPS = 60
+
 # initializes the Pygame library
 pygame.init()
 
@@ -35,4 +38,4 @@ while True :
     pygame.display.flip()
 
     # Control the frame rate using the Pygame clock
-    clock.tick() # Replace FPS with your desired frames per second value
+    clock.tick(FPS) # Replace FPS with your desired frames per second value
