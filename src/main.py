@@ -1,6 +1,9 @@
 # Importing pygame package
 import pygame
 
+# Importing pygame.locals package
+from copy import deepcopy
+
 # Set the width and height of the grid in terms of the number of tiles.
 WIDTH, HEIGHT = 10, 20
 
@@ -63,13 +66,24 @@ for blk_pos in block_pos:
 # Specify a rectangle to symbolise the block.
 blk_rect = pygame.Rect(0,0, TILE_SIZE - 2, TILE_SIZE - 2)
 
-# Assign the starting block to the list's first block.
-block = blocks[1]
+# Create a deep copy of the first block in the 'blocks' list and assign it to 'block'
+block = deepcopy(blocks[0])
+
+# Define a function to check if the block is within the horizontal borders
+def check_borders():
+    # Check if the x-coordinate of any element in 'block' is outside the horizontal borders
+    if block[i].x < 0 or block[i].x > WIDTH - 1:
+        return False
+    # If all x-coordinates are within the borders, return True
+    return True
+
 
 # Main game loop
 while True :
+    # Initialize the x-coordinate of the block
     dx = 0
-     # Clear the screen by filling it with a black color.
+
+    # Clear the screen by filling it with a black color.
     g_screen.fill(pygame.Color('black'))
 
     # Check for events in the Pygame event queue.
@@ -78,15 +92,34 @@ while True :
         if event.type == pygame.QUIT:
             # Exit the program.
             exit()
+
+        # Check for KEYDOWN events
         if event.type == pygame.KEYDOWN:
+            # Check if the pressed key is the left arrow key
             if event.key == pygame.K_LEFT:
+                # Set the x-directional movement to -1
                 dx = -1
+
+            # Check if the pressed key is the right arrow key
             if event.key == pygame.K_RIGHT:
+                # Set the x-directional movement to 1
                 dx = 1
     
-    # move x
+    # Create a deep copy of the first block in the 'blocks' list and assign it to 'block_old'
+    block_old = deepcopy(block)
+
+    # Move the block in the x-direction based on the defined movement
     for i in range(4):
+        
+        # Update the x-coordinate of each element in 'block' based on the movement 'dx'
         block[i].x += dx
+        
+        # Check if the updated block position is within the horizontal borders
+        if not check_borders():
+            # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
+            block = deepcopy(block_old)
+            break
+
 
     # Define the color
     line_color = (40, 40, 40)
