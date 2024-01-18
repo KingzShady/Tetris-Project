@@ -18,3 +18,12 @@ while true :
      # Clear the screen by filling it with a black color.
     g_screen.fill(pygame.Color('black'))
 
+    # Check for events in the Pygame event queue.
+    for event in pygame.event.get():
+        # If the event is a QUIT event (user closes the window):
+        if event.type == pygame.QUIT:
+            # Quit Pygame and exit the program.
+            pygame.quit()
+            quit()
+     
+
