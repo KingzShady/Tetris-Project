@@ -45,7 +45,15 @@ while True :
         if event.type == pygame.QUIT:
             # Quit Pygame and exit the program.
             exit()
-    
+
+    # Define the color
+    line_color = (40, 40, 40)
+
+    # Loop through each rectangle in the grid and draw a rectangle with a border
+    for i_rect in grid:
+        pygame.draw.rect(g_screen, line_color, i_rect, 1)
+
+
     # updates the display to reflect the changes made during the current frame.
     pygame.display.flip()
 
