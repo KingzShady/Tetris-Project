@@ -61,13 +61,14 @@ for blk_pos in block_pos:
     blocks.append(row)
 
 # Specify a rectangle to symbolise the block.
-block_rect = pygame.Rect(0,0, TILE_SIZE - 2, TILE_SIZE - 2)
+blk_rect = pygame.Rect(0,0, TILE_SIZE - 2, TILE_SIZE - 2)
 
 # Assign the starting block to the list's first block.
-block = blocks[0]
+block = blocks[1]
 
 # Main game loop
 while True :
+    dx = 0
      # Clear the screen by filling it with a black color.
     g_screen.fill(pygame.Color('black'))
 
@@ -77,6 +78,15 @@ while True :
         if event.type == pygame.QUIT:
             # Exit the program.
             exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                dx = -1
+            if event.key == pygame.K_RIGHT:
+                dx = 1
+    
+    # move x
+    for i in range(4):
+        block[i].x += dx
 
     # Define the color
     line_color = (40, 40, 40)
@@ -84,7 +94,15 @@ while True :
     # Loop through each rectangle in the grid and draw a rectangle with a border
     for i_rect in grid:
         pygame.draw.rect(g_screen, line_color, i_rect, 1)
-
+    
+    # Loop through the first four elements of the 'block' list
+    for i in range(4):
+        # Set the position of 'blk_rect' based on the current element in 'block'
+        blk_rect.x = block[i].x * TILE_SIZE
+        blk_rect.y = block[i].y * TILE_SIZE
+    
+        # Draw a white rectangle on the screen at the updated position
+        pygame.draw.rect(g_screen, pygame.Color('white'), blk_rect)
 
     # Updates the display to reflect the changes made during the current frame.
     pygame.display.flip()
