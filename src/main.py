@@ -1,8 +1,14 @@
 # importing pygame package
 import pygame
 
-# setting the window resolution of the game
-WIN_RES = 800,600
+# Set the width and height of the grid in terms of the number of tiles.
+WIDTH, HEIGHT = 10, 20
+
+# Set the size of each tile in pixels.
+TILE = 45
+
+# Calculate the window resolution based on the grid dimensions and tile size.
+WIN_RES = WIDTH * TILE, HEIGHT * TILE
 
 # initializes the Pygame library
 pygame.init()
