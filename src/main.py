@@ -101,7 +101,7 @@ def check_borders():
 # Main game loop
 while True :
     # Initialize the x-coordinate of the block
-    dx = 0
+    dx, rotate = 0, False
 
     # Clear the screen by filling it with a black color.
     g_screen.fill(pygame.Color('black'))
@@ -129,6 +129,10 @@ while True :
             if event.key == pygame.K_DOWN:
                 # Set a new animation limit for faster animation when the down arrow key is pressed
                 anim_limit = 100
+            
+            # Check if the pressed key is the up arrow key
+            if event.key == pygame.K_UP:
+                rotate = True
 
     ''' Moving X of Block'''
     # Create a deep copy of the first block in the 'blocks' list and assign it to 'block_old'
@@ -177,6 +181,40 @@ while True :
                 anim_limit = 2000
                 break
 
+    ''' Rotating blocks'''
+    # Set 'center' as the first element of 'block' (assuming it represents the center of rotation)
+    center = block[0]
+
+    # Check if the 'rotate' flag is set to True
+    if rotate:
+        # Move the block in the x and y directions based on the defined rotation
+        for i in range(4):
+            # Calculate the new coordinates relative to the center of rotation
+            x = block[i].y - center.y
+            y = block[i].x - center.x
+
+            # Update the block coordinates with the rotated values
+            block[i].x = center.x - x
+            block[i].y = center.y + y
+
+            # Check if the updated block position is within the horizontal borders
+            if not check_borders():
+                # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
+                block = deepcopy(block_old)
+                break
+    
+    # check for lines
+    line = HEIGHT - 1
+    for row in range(HEIGHT - 1, -1, -1):
+        count = 0
+        for col in range(WIDTH):
+            if field[row][col]:
+                count += 1
+            field [line][col] = field[row][col]
+        if count < WIDTH:
+            line -= 1
+
+    ''' Drawing Grid'''
     # Define the color
     line_color = (40, 40, 40)
 
