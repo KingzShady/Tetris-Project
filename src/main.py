@@ -107,6 +107,11 @@ while True :
             if event.key == pygame.K_RIGHT:
                 # Set the x-directional movement to 1
                 dx = 1
+            
+            # Check if the pressed key is the down arrow key
+            if event.key == pygame.K_DOWN:
+                # Set a new animation limit for faster animation when the down arrow key is pressed
+                anim_limit = 100
     
     # Create a deep copy of the first block in the 'blocks' list and assign it to 'block_old'
     block_old = deepcopy(block)
@@ -121,6 +126,8 @@ while True :
         if not check_borders():
             # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
             block = deepcopy(block_old)
+            # Reset the animation limit to its original value
+            anim_limit = 2000
             break
 
     # Increment the animation count by the animation speed
