@@ -66,6 +66,9 @@ for blk_pos in block_pos:
 # Specify a rectangle to symbolise the block.
 blk_rect = pygame.Rect(0,0, TILE_SIZE - 2, TILE_SIZE - 2)
 
+# Initialize variables for animation: current count, animation speed, and animation limit
+anim_count, anim_speed, anim_limit = 0, 60, 2000
+
 # Create a deep copy of the first block in the 'blocks' list and assign it to 'block'
 block = deepcopy(blocks[0])
 
@@ -120,6 +123,26 @@ while True :
             block = deepcopy(block_old)
             break
 
+    # Increment the animation count by the animation speed
+    anim_count += anim_speed
+
+    # Check if the animation count is greater than the animation limit
+    if anim_count >= anim_limit:
+        # Reset the animation count to 0
+        anim_count = 0
+
+        # Create a deep copy of the first block in the 'blocks' list and assign it to 'block_old'
+        block_old = deepcopy(block)
+        # Move the block in the x-direction based on the defined movement
+        for i in range(4):
+            # Update the x-coordinate of each element in 'block' based on the movement 'dx'
+            block[i].y += 1
+        
+            # Check if the updated block position is within the horizontal borders
+            if not check_borders():
+                # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
+                block = deepcopy(block_old)
+                break
 
     # Define the color
     line_color = (40, 40, 40)
