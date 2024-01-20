@@ -381,16 +381,21 @@ while True :
 
             # Reset animation variables
             anim_count, anim_speed, anim_limit = 0, 60, 2000
+
             # Reset the score to zer
             score = 0
+
             # Loop through each rectangle in the 'grid' list
             for i_rect in grid:
                 # Draw a rectangle on the 'g_screen' surface with a random color
                 pygame.draw.rect(g_screen, get_color(), i_rect)
+
                 # Draw 'g_screen' on the 'screen' surface at a specific position
                 screen.blit(g_screen, (20, 20))
+
                 # Update the display
                 pygame.display.flip()
+                
                 # Control the frames per second (FPS) by waiting for a specific amount of time
                 clock.tick(200)
 
