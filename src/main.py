@@ -87,22 +87,6 @@ for i in range(HEIGHT):
 # Initialize variables for animation: current count, animation speed, and animation limit
 anim_count, anim_speed, anim_limit = 0, 60, 2000
 
-# Create a deep copy of a randomly chosen block from the 'blocks' list and assign it to 'block'
-block = deepcopy(choice(blocks))
-
-# Define a function to check if the block is within the horizontal borders
-def check_borders():
-    # Check if the x-coordinate of any element in 'block' is outside the horizontal borders
-    if block[i].x < 0 or block[i].x > WIDTH - 1:
-        return False
-    
-    # Check if the y-coordinate of any element in 'block' is outside the vertical borders
-    # or if there is a non-zero value in the corresponding field position
-    elif block[i].y > HEIGHT - 1 or field[block[i].y][block[i].x]:
-        return False
-    # If all x-coordinates are within the borders, return True
-    return True
-
 # Load and convert the background image for the window
 background = pygame.image.load('images/bg.jpg').convert()
 
@@ -123,8 +107,25 @@ def get_color():
     blue = randrange(30, 256)
     return red, green, blue
 
-# Call the function to get a random color
-color = get_color()
+# Create a deep copy of a randomly chosen block from the 'blocks' list and assign it to 'block'
+# Also, create a deep copy of the next block for preview and assign it to 'next_block'
+block, next_block = deepcopy(choice(blocks)), deepcopy(choice(blocks))
+
+# Call the function to get a random color for the current block and the next block for preview
+color, next_color = get_color(), get_color()
+
+# Define a function to check if the block is within the horizontal borders
+def check_borders():
+    # Check if the x-coordinate of any element in 'block' is outside the horizontal borders
+    if block[i].x < 0 or block[i].x > WIDTH - 1:
+        return False
+    
+    # Check if the y-coordinate of any element in 'block' is outside the vertical borders
+    # or if there is a non-zero value in the corresponding field position
+    elif block[i].y > HEIGHT - 1 or field[block[i].y][block[i].x]:
+        return False
+    # If all x-coordinates are within the borders, return True
+    return True
 
 # Main game loop
 while True :
@@ -209,11 +210,11 @@ while True :
                     # Set the color of the grid position corresponding to the previous block state
                     field[block_old[i].y][block_old[i].x] = color
                 
-                # Call the function to get a random color and assign it to the 'color' variable
-                color = get_color()
+                # Set the current block and color to the next block and color
+                block, color = next_block, next_color
 
-                # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
-                block = deepcopy(choice(blocks))
+                # Generate a new next block and color for preview
+                next_block, next_color = deepcopy(choice(blocks)), get_color()
 
                 # Reset the animation limit to its original value
                 anim_limit = 2000
@@ -281,6 +282,17 @@ while True :
 
                 # Draw a colored rectangle on the screen at the updated position
                 pygame.draw.rect(g_screen, col, blk_rect)
+
+    '''Drawing next Block for Preview'''
+    # draw next block
+    # Loop through the first four elements of the 'block' list
+    for i in range(4):
+        # Set the position of 'blk_rect' based on the current element in 'block'
+        blk_rect.x = next_block[i].x * TILE_SIZE + 380
+        blk_rect.y = next_block[i].y * TILE_SIZE + 185
+    
+        # Draw a rectangle on the 'g_screen' surface with a specified color and position
+        pygame.draw.rect(screen, next_color, blk_rect)
 
     ''' Drawing Titles'''
     # Draw the 'title_tetris' text surface on the Pygame screen at a specific position
