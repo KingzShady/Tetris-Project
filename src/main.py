@@ -87,6 +87,7 @@ for i in range(HEIGHT):
 # Initialize variables for animation: current count, animation speed, and animation limit
 anim_count, anim_speed, anim_limit = 0, 60, 2000
 
+'''Loading in Assests'''
 # Load and convert the background image for the window
 background = pygame.image.load('images/bg.jpg').convert()
 
@@ -99,6 +100,12 @@ font = pygame.font.Font('font/font.ttf', 45)
 
 # Render the text 'TETRIS' using the main font with a specified color
 title_tetris = main_font.render('TETRIS', True, pygame.Color('darkblue'))
+
+# Render the text 'Score:' using the 'font' and store it in 'title_score'
+title_score = font.render('Score:', True, pygame.Color('green'))
+
+# Render the text 'Record:' using the 'font' and store it in 'title_record'
+title_record = font.render('Record:', True, pygame.Color('purple'))
 
 # Function to get a random color
 def get_color():
@@ -114,6 +121,12 @@ block, next_block = deepcopy(choice(blocks)), deepcopy(choice(blocks))
 # Call the function to get a random color for the current block and the next block for preview
 color, next_color = get_color(), get_color()
 
+# Initialize score and lines variables
+score, lines = 0,0
+
+# Define a dictionary mapping the number of cleared lines to corresponding scores
+scores = {0:0, 1: 100, 2:300, 3: 700, 4:1500}
+
 # Define a function to check if the block is within the horizontal borders
 def check_borders():
     # Check if the x-coordinate of any element in 'block' is outside the horizontal borders
@@ -127,8 +140,33 @@ def check_borders():
     # If all x-coordinates are within the borders, return True
     return True
 
-# Main game loop
+''' Recording Records'''
+# Define a function to retrieve the record from a file
+def get_record():
+    try:
+        # Try to open the 'record' file and read the first line
+        with open('record') as f:
+            return f.readline()
+        
+    except FileNotFoundError:
+        # If the 'record' file is not found, create it and initialize with '0'
+        with open('record','w') as f:
+            f.write('0')
+
+# Define a function to set the record value in a file
+def set_record(record, score):
+    # Determine the maximum value between the existing record and the current score
+    rec = max(int(record), score)
+
+    # Open the 'record' file and write the new record value
+    with open('record','w') as f:
+            f.write(str(rec))
+
+'''Main Game Loop'''
 while True :
+    # Call the 'get_record' function to retrieve the record value from the file
+    record = get_record()
+
     # Initialize the x-coordinate of the block
     dx, rotate = 0, False
 
@@ -140,6 +178,10 @@ while True :
 
     # Draw the game background on 'g_screen'
     g_screen.blit(game_background, (0,0))
+
+    # Pause the game for a short duration for visual effect
+    for i in range(lines):
+        pygame.time.wait(200)
 
     ''' Game Control '''
     # Check for events in the Pygame event queue.
@@ -241,17 +283,34 @@ while True :
                 # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
                 block = deepcopy(block_old)
                 break
-    
-    # check for lines
-    line = HEIGHT - 1
+
+    ''' Checking the Lines'''
+    # Initialize variables for line and lines
+    line, lines = HEIGHT - 1, 0
+
+    # Iterate through each row in reverse order
     for row in range(HEIGHT - 1, -1, -1):
         count = 0
+        
+        # Count the filled blocks in the current row
         for col in range(WIDTH):
             if field[row][col]:
                 count += 1
+            
+            # Copy the row to the line below if there are still blocks in the row
             field [line][col] = field[row][col]
+        
+        # Move the line pointer up if the row has no filled blocks
         if count < WIDTH:
             line -= 1
+        else:
+            # Increase animation speed and increment the lines counter
+            anim_speed += 3
+            lines += 1
+    
+    ''' Calculating Score'''
+    # Increment the score based on the number of cleared lines using the 'scores' dictionary
+    score += scores[lines]
 
     ''' Drawing Grid'''
     # Define the color
@@ -287,16 +346,56 @@ while True :
     # draw next block
     # Loop through the first four elements of the 'block' list
     for i in range(4):
-        # Set the position of 'blk_rect' based on the current element in 'block'
+        # Set the position of 'blk_rect' based on the current element in 'next_block'
         blk_rect.x = next_block[i].x * TILE_SIZE + 380
         blk_rect.y = next_block[i].y * TILE_SIZE + 185
     
-        # Draw a rectangle on the 'g_screen' surface with a specified color and position
+        # Draw a rectangle on the 'screen' surface with the color of the next block and specified position
         pygame.draw.rect(screen, next_color, blk_rect)
 
     ''' Drawing Titles'''
     # Draw the 'title_tetris' text surface on the Pygame screen at a specific position
     screen.blit(title_tetris, (485, -10))
+
+    # Draw the 'title_score' text surface on the Pygame screen at a specific position
+    screen.blit(title_score, (535, 780))
+    # Render the player's score as text using the 'font' and draw it on the screen
+    screen.blit(font.render(str(score), True, pygame.Color('white')), (550,840))
+
+    # Draw the 'title_record' text surface on the Pygame screen at a specific position
+    screen.blit(title_record, (525, 650))
+    # Render the record value as text using the 'font' and draw it on the screen
+    screen.blit(font.render(record, True, pygame.Color('gold')), (550,710))
+
+    '''Game Over State'''
+    # Check if there is a filled block in the top row (row index 0)
+    # for i in range(WIDTH):
+    #     # If there is a filled block in the top row, update the record with the current score
+    #     if field[0][i]:
+    #         set_record(record, score)
+
+    #     # Reset the game grid by filling 2D array filled with zeros
+    #     field = [[0 for i in range(WIDTH)] for i in range(HEIGHT)]
+
+    #     # Reset animation variables
+    #     anim_count, anim_speed, anim_limit = 0, 60, 2000
+
+    #     # Reset the score to zero
+    #     score = 0
+
+    #     # Loop through each rectangle in the 'grid' list
+    #     for i_rect in grid:
+    #         # Draw a rectangle on the 'g_screen' surface with a random color
+    #         pygame.draw.rect(g_screen, get_color(), i_rect)
+
+    #         # Draw 'g_screen' on the 'screen' surface at a specific position
+    #         screen.blit(g_screen,(20,20))
+
+    #         # Update the display
+    #         pygame.display.flip()
+
+    #         # Control the frames per second (FPS) by waiting for a specific amount of time
+    #         clock.tick(200)
 
     # Updates the display to reflect the changes made during the current frame.
     pygame.display.flip()
