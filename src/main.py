@@ -16,14 +16,20 @@ TILE_SIZE = 45
 # Calculate the window resolution based on the grid dimensions and tile size.
 WIN_RES = WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE
 
+# Set the resolution of the Pygame window
+RES = 752, 940
+
 # Set the frames per second for the game loop.
 FPS = 60
 
 # Initializes the Pygame library
 pygame.init()
 
-# Creating a Pygame window with the specified resolution (WIN_RES)
-g_screen = pygame.display.set_mode(WIN_RES)
+# Set up the Pygame display with the specified resolution
+screen = pygame.display.set_mode(RES)
+
+# Create a Pygame surface with the specified resolution
+g_screen = pygame.Surface(WIN_RES)
 
 # Creating a Pygame clock object that can be used to control the frame rate of the game.
 clock = pygame.time.Clock()
@@ -97,15 +103,27 @@ def check_borders():
     # If all x-coordinates are within the borders, return True
     return True
 
+# Load and convert the background image for the window
+background = pygame.image.load('images/bg.jpg').convert()
+
+# Load and convert the background image for the game screen
+game_background = pygame.image.load('images/game_bg.jpg').convert()
 
 # Main game loop
 while True :
     # Initialize the x-coordinate of the block
     dx, rotate = 0, False
 
-    # Clear the screen by filling it with a black color.
-    g_screen.fill(pygame.Color('black'))
+    # Draw the main menu background on the Pygame window
+    screen.blit(background, (0, 0))
 
+    # Draw the content of 'g_screen' on the Pygame window at a specific position
+    screen.blit(g_screen,(20,20))
+
+    # Draw the game background on 'g_screen'
+    g_screen.blit(game_background, (0,0))
+
+    ''' Game Control '''
     # Check for events in the Pygame event queue.
     for event in pygame.event.get():
         # If the event is a QUIT event (user closes the window):
