@@ -109,6 +109,23 @@ background = pygame.image.load('images/bg.jpg').convert()
 # Load and convert the background image for the game screen
 game_background = pygame.image.load('images/game_bg.jpg').convert()
 
+# Load fonts for text rendering
+main_font = pygame.font.Font('font/font.ttf', 65)
+font = pygame.font.Font('font/font.ttf', 45)
+
+# Render the text 'TETRIS' using the main font with a specified color
+title_tetris = main_font.render('TETRIS', True, pygame.Color('darkblue'))
+
+# Function to get a random color
+def get_color():
+    red = randrange(30, 256)
+    green = randrange(30, 256)
+    blue = randrange(30, 256)
+    return red, green, blue
+
+# Call the function to get a random color
+color = get_color()
+
 # Main game loop
 while True :
     # Initialize the x-coordinate of the block
@@ -189,9 +206,12 @@ while True :
             if not check_borders():
                 # Set the corresponding positions in the 'field' grid to the color white for each element in 'block'
                 for i in range(4):
-                    # Set the color of the grid position defined by the current element in 'block' to white
-                    field[block_old[i].y][block_old[i].x] = pygame.Color('white')
+                    # Set the color of the grid position corresponding to the previous block state
+                    field[block_old[i].y][block_old[i].x] = color
                 
+                # Call the function to get a random color and assign it to the 'color' variable
+                color = get_color()
+
                 # If the block is outside the borders, revert 'block' to the previous state and break out of the loop
                 block = deepcopy(choice(blocks))
 
@@ -240,15 +260,17 @@ while True :
     for i_rect in grid:
         pygame.draw.rect(g_screen, line_color, i_rect, 1)
     
+    ''' Drawing Blocks'''
     # Loop through the first four elements of the 'block' list
     for i in range(4):
         # Set the position of 'blk_rect' based on the current element in 'block'
         blk_rect.x = block[i].x * TILE_SIZE
         blk_rect.y = block[i].y * TILE_SIZE
     
-        # Draw a white rectangle on the screen at the updated position
-        pygame.draw.rect(g_screen, pygame.Color('white'), blk_rect)
+        # Draw a rectangle on the 'g_screen' surface with a specified color and position
+        pygame.draw.rect(g_screen, color, blk_rect)
     
+    ''' Drawing Field'''
     # Loop through each row (y-coordinate) and column (x-coordinate) in the 'field' grid
     for y, raw in enumerate(field):
         for x, col in enumerate(raw):
@@ -259,6 +281,10 @@ while True :
 
                 # Draw a colored rectangle on the screen at the updated position
                 pygame.draw.rect(g_screen, col, blk_rect)
+
+    ''' Drawing Titles'''
+    # Draw the 'title_tetris' text surface on the Pygame screen at a specific position
+    screen.blit(title_tetris, (485, -10))
 
     # Updates the display to reflect the changes made during the current frame.
     pygame.display.flip()
