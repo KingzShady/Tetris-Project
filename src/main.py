@@ -369,33 +369,30 @@ while True :
 
     '''Game Over State'''
     # Check if there is a filled block in the top row (row index 0)
-    # for i in range(WIDTH):
-    #     # If there is a filled block in the top row, update the record with the current score
-    #     if field[0][i]:
-    #         set_record(record, score)
+    for i in range(WIDTH):
+        # If there is a filled block in the top row, update the record with the current score
+        if field[0][i]:
 
-    #     # Reset the game grid by filling 2D array filled with zeros
-    #     field = [[0 for i in range(WIDTH)] for i in range(HEIGHT)]
+            # If there is a filled block in the top row, update the record with the current score
+            set_record(record, score)
 
-    #     # Reset animation variables
-    #     anim_count, anim_speed, anim_limit = 0, 60, 2000
+            # Reset the game grid by filling 2D array filled with zeros
+            field = [[0 for i in range(WIDTH)] for i in range(HEIGHT)]
 
-    #     # Reset the score to zero
-    #     score = 0
-
-    #     # Loop through each rectangle in the 'grid' list
-    #     for i_rect in grid:
-    #         # Draw a rectangle on the 'g_screen' surface with a random color
-    #         pygame.draw.rect(g_screen, get_color(), i_rect)
-
-    #         # Draw 'g_screen' on the 'screen' surface at a specific position
-    #         screen.blit(g_screen,(20,20))
-
-    #         # Update the display
-    #         pygame.display.flip()
-
-    #         # Control the frames per second (FPS) by waiting for a specific amount of time
-    #         clock.tick(200)
+            # Reset animation variables
+            anim_count, anim_speed, anim_limit = 0, 60, 2000
+            # Reset the score to zer
+            score = 0
+            # Loop through each rectangle in the 'grid' list
+            for i_rect in grid:
+                # Draw a rectangle on the 'g_screen' surface with a random color
+                pygame.draw.rect(g_screen, get_color(), i_rect)
+                # Draw 'g_screen' on the 'screen' surface at a specific position
+                screen.blit(g_screen, (20, 20))
+                # Update the display
+                pygame.display.flip()
+                # Control the frames per second (FPS) by waiting for a specific amount of time
+                clock.tick(200)
 
     # Updates the display to reflect the changes made during the current frame.
     pygame.display.flip()
